@@ -25,7 +25,7 @@ export const handler = NextAuth({
             // session.user.id = sessionUser._id.toString();
             return session;
         },
-        async signIn({ account, profile, user, credentials }){
+        async signIn({account, profile, user, credentials}){
             try {
                 // await connectToDB();
                 // const userExists = await User.findOne({ email: profile.email });
