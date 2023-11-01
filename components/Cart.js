@@ -1,13 +1,8 @@
-'use client';
-import Link from 'next/link';
-import Image from 'next/image';
-import {signIn, signOut, useSession, getProviders} from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import { Fragment } from 'react'
+'use client'
+import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
-//Cart Component
 const products = [
   {
     id: 1,
@@ -33,7 +28,8 @@ const products = [
   // More products...
 ]
 
-const Cart = ({setOpen, open})=>{
+export default function Cart() {
+  const [open, setOpen] = useState(true)
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -161,141 +157,3 @@ const Cart = ({setOpen, open})=>{
     </Transition.Root>
   )
 }
-
-
-
-
-//Navbar
-const Nav = () => {
-  const {data: session} = useSession();
-  const [providers, setProviders] = useState(null);
-  const [toggleDropdown, settoggleDropdown] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  // useEffect(()=>{
-  //   const setUpProviders = async()=>{
-  //     const res = await getProviders();
-  //     setProviders(res);
-  //   }
-  //   setUpProviders();
-  // },[])
-  
-  return (
-    <nav className='w-full flex-between mb-16 pt-3 px-10'>
-      <Link href='/' className='flex gap-2 flex-center'>
-          <p className='border p-2 px-3 rounded-full'>Health Hub</p>
-      </Link>
-      <button onClick={()=>setOpen((prev)=>!prev)} className='border p-2 px-3 rounded-full'>Cart</button>
-      {setOpen && <Cart setOpen={setOpen} open={open}/>}
-      {/* Desktop navigation */}
-      <div className='sm:flex hidden'>
-        {session?.user ? (
-          //if signed in
-          <div className='flex gap-3 md:gap-5'>
-            <Link href='/checkout' className='black_btn'>
-              Checkout
-            </Link>
-            <button
-              type='button'
-              onClick={signOut}
-              className='outline_btn'
-            >
-              Sign Out
-            </button>
-
-            <Link href='/profile'>
-              <Image 
-                src={session?.user.image}
-                alt='Profile image'
-                width={30}
-                height={30}
-                className='rounded-full'
-              />
-            </Link>
-
-          </div>
-        ):
-         //if not signed in 
-          <>
-          {/* Shows all providers and gives option to sign in. We only use google auth */}
-            {providers && Object.values(providers).map((provider)=>{
-              return (
-                <button 
-                  type='button'
-                  key={provider.name}
-                  onClick={()=>signIn(provider.id)}
-                >
-                  Sign In
-                </button>
-              )
-            })}
-          </>
-        }
-      </div>
-
-      {/* mobile navigation */}
-      <div className='sm:hidden flex relative'>
-        {session?.user ? (
-          <div className='flex'>
-            <Image 
-                src={session?.user.image} 
-                alt='Profile image'
-                width={30}
-                height={30}
-                className='rounded-full'
-                onClick={()=>settoggleDropdown((prev)=>!prev)}
-              />
-              {toggleDropdown && (
-                <div className='dropdown'>
-                  <Link 
-                    href='/' 
-                    className='dropdown_link' 
-                    onClick={()=>settoggleDropdown(false)}>
-                      Home Page
-                  </Link>
-                  <Link 
-                    href='/profile' 
-                    className='dropdown_link' 
-                    onClick={()=>settoggleDropdown(false)}>
-                      My Cart
-                  </Link>
-                  <Link 
-                    href='/create-prompt' 
-                    className='dropdown_link' 
-                    onClick={()=>settoggleDropdown(false)}>
-                      Checkout
-                  </Link>
-                  <button 
-                    type='button'
-                    onClick={()=>{settoggleDropdown(false);
-                    signOut()}}
-                    className='mt-5 w-full black_btn'
-                    >
-                      Sign Out
-                  </button>
-                </div>
-              )}
-          </div>
-        ):
-          <>
-            {providers && Object.values(providers).map((provider)=>{
-              return (
-                <button
-                  type='button'
-                  className='black_btn'
-                  key={provider.name}
-                  onClick={()=>signIn(provider.id)}
-                >
-                  Sign In
-                </button>
-              )
-            })}
-          </>
-        }
-      </div>
-    </nav>
-    
-    )
-}
-
-export default Nav

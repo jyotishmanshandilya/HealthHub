@@ -1,5 +1,5 @@
 import Feed from "@/components/Feed";
-
+import Cart from "@/components/Cart";
 
 export default function Home() {
   return (
